@@ -64,6 +64,7 @@
                  src='{{ CRUDBooster::getSetting("logo")?asset(CRUDBooster::getSetting('logo')):asset('vendor/crudbooster/assets/logo_crudbooster.png') }}'
                  style='max-width: 100%;max-height:170px'/>
         </a>
+        <p>{{ CRUDBooster::getSetting('appname') }}</p>
     </div><!-- /.login-logo -->
     <div class="login-box-body">
 
@@ -105,8 +106,7 @@
             </div>
 
             <div class='row'>
-                <div class='col-xs-12' align="center"><p style="padding:10px 0px 10px 0px">{{cbLang("text_forgot_password")}} <a
-                                href='{{route("getForgot")}}'>{{cbLang("click_here")}}</a></p></div>
+                <div class='col-xs-12' align="center"><p style="padding:10px 0px 10px 0px">{{cbLang("text_login_footer")}} </p></div>
             </div>
         </form>
 

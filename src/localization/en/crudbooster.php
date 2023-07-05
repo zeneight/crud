@@ -2,7 +2,8 @@
 return [
     'email_footer' => 'Do not reply any email to this email address. This email sent automatically by our system. ',
     'login_message' => 'Please login to start your session',
-    'text_forgot_password' => 'Forgot the password ?',
+    'text_forgot_password' => 'Forgot the password?',
+    'text_login_footer' => 'Developed with love - v1.0',
     'page_title_login' => 'Login Panel',
     'page_title_forgot' => 'Forgot Password',
     'forgot_message' => 'Enter your email address, to request password',
