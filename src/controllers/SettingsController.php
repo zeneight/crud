@@ -68,10 +68,10 @@ class SettingsController extends CBController
     {
         $this->cbLoader();
 
-        if (! CRUDBooster::isSuperadmin()) {
+        // if (! CRUDBooster::isSuperadmin()) {
             CRUDBooster::insertLog(cbLang("log_try_view", ['name' => 'Setting', 'module' => 'Setting']));
-            CRUDBooster::redirect(CRUDBooster::adminPath(), cbLang('denied_access'));
-        }
+            // CRUDBooster::redirect(CRUDBooster::adminPath(), cbLang('denied_access'));
+        // }
 
         $data['page_title'] = urldecode(Request::get('group'));
 
