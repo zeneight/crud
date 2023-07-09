@@ -82,26 +82,35 @@ class AdminController extends CBController
             'password' => $password,
         ]);
 
-        dd($response);
+        // return $response->json();
+        // dd($response['content']);
 
-        if (\Hash::check($password, $users->password)) {
-            $priv = DB::table("cms_privileges")->where("id", $users->id_cms_privileges)->first();
+        if ($response['response_code']===200) {
+            $users = $response['content'];
 
-            $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $users->id_cms_privileges)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
+            if($users['usergroup']==18) {
+                $hak_akses = 2;
+            } else {
+                return redirect()->route('getLogin')->with('message', 'Hak Akses Tidak Ada!');
+                exit();
+            }
+            $priv = DB::table("cms_privileges")->where("id", $hak_akses)->first();
+            $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $hak_akses)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
 
-            $photo = ($users->photo) ? asset($users->photo) : asset('vendor/crudbooster/avatar.jpg');
-            Session::put('admin_id', $users->id);
-            Session::put('admin_is_superadmin', $priv->is_superadmin);
-            Session::put('admin_name', $users->name);
+            $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
+
+            Session::put('admin_id', $users['uname']);
+            Session::put('admin_is_superadmin', 0);
+            Session::put('admin_name', $users['name']);
             Session::put('admin_photo', $photo);
             Session::put('admin_privileges_roles', $roles);
-            Session::put("admin_privileges", $users->id_cms_privileges);
+            Session::put("admin_privileges", $hak_akses);
             Session::put('admin_privileges_name', $priv->name);
             Session::put('admin_lock', 0);
             Session::put('theme_color', $priv->theme_color);
             Session::put("appname", get_setting('appname'));
 
-            CRUDBooster::insertLog(cbLang("log_login", ['email' => $users->email, 'ip' => Request::server('REMOTE_ADDR')]));
+            CRUDBooster::insertLog(cbLang("log_login", ['email' => $response['content']['name'], 'ip' => Request::server('REMOTE_ADDR')]));
 
             $cb_hook_session = new \App\Http\Controllers\CBHook;
             $cb_hook_session->afterLogin();
@@ -151,8 +160,10 @@ class AdminController extends CBController
     public function getLogout()
     {
 
-        $me = CRUDBooster::me();
-        CRUDBooster::insertLog(cbLang("log_logout", ['email' => $me->email]));
+        // $me = CRUDBooster::me();
+        $name = Session::get('admin_name');
+
+        CRUDBooster::insertLog(cbLang("log_logout", ['email' => $name]));
 
         Session::flush();
 
