@@ -61,7 +61,7 @@ class AdminController extends CBController
     {
 
         $validator = Validator::make(Request::all(), [
-            'username' => 'required|username',
+            'username' => 'required',
             'password' => 'required',
         ]);
 
