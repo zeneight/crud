@@ -75,10 +75,10 @@ class AdminController extends CBController
         $password = Request::input("password");
         // $users = DB::table(config('crudbooster.USER_TABLE'))->where("email", $email)->first();
 
-        $response = Http::post(config('crudbooster.LOGIN_URL'), [
+        $response = Http::asForm()->post(config('crudbooster.LOGIN_URL'), [
             // $user is the GenericUser instance created in
             // the retrieveByCredentials() method above.
-            'email' => $username,
+            'username' => $username,
             'password' => $password,
         ]);
 
