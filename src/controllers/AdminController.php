@@ -90,8 +90,10 @@ class AdminController extends CBController
 
             if($users['usergroup']==18) {
                 $hak_akses = 2;
+                $super_admin = 0;
             } else if($users['usergroup']=='04') {
                 $hak_akses = 1;
+                $super_admin = 1;
             } else {
                 return redirect()->route('getLogin')->with('message', 'Hak Akses Tidak Ada!');
                 exit();
@@ -102,7 +104,7 @@ class AdminController extends CBController
             $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
 
             Session::put('admin_id', $users['uname']);
-            Session::put('admin_is_superadmin', 0);
+            Session::put('admin_is_superadmin', $super_admin);
             Session::put('admin_name', $users['name']);
             Session::put('admin_photo', $photo);
             Session::put('admin_privileges_roles', $roles);
