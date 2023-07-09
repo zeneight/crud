@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Facades\Http;
+
 class AdminController extends CBController
 {
     function getIndex()
@@ -59,7 +61,7 @@ class AdminController extends CBController
     {
 
         $validator = Validator::make(Request::all(), [
-            'email' => 'required|email|exists:'.config('crudbooster.USER_TABLE'),
+            'username' => 'required|username',
             'password' => 'required',
         ]);
 
@@ -69,9 +71,18 @@ class AdminController extends CBController
             return redirect()->back()->with(['message' => implode(', ', $message), 'message_type' => 'danger']);
         }
 
-        $email = Request::input("email");
+        $username = Request::input("username");
         $password = Request::input("password");
-        $users = DB::table(config('crudbooster.USER_TABLE'))->where("email", $email)->first();
+        // $users = DB::table(config('crudbooster.USER_TABLE'))->where("email", $email)->first();
+
+        $response = Http::post(config('crudbooster.LOGIN_URL'), [
+            // $user is the GenericUser instance created in
+            // the retrieveByCredentials() method above.
+            'email' => $username,
+            'password' => $password,
+        ]);
+
+        dd($response);
 
         if (\Hash::check($password, $users->password)) {
             $priv = DB::table("cms_privileges")->where("id", $users->id_cms_privileges)->first();
