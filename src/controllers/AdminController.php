@@ -90,6 +90,8 @@ class AdminController extends CBController
 
             if($users['usergroup']==18) {
                 $hak_akses = 2;
+            } else if($users['usergroup']=='04') {
+                $hak_akses = 1;
             } else {
                 return redirect()->route('getLogin')->with('message', 'Hak Akses Tidak Ada!');
                 exit();
