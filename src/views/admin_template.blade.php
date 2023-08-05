@@ -209,6 +209,7 @@
 
 
 @include('crudbooster::admin_template_plugins')
+@include('dashboard_modal')
 
 <!-- load js -->
 @if($load_js)
