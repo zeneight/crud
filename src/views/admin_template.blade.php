@@ -27,6 +27,10 @@
 
     <link rel='stylesheet' href='{{asset("vendor/crudbooster/assets/css/main.css") }}'/>
 
+    <!-- custom css -->
+    <link rel='stylesheet' href='{{asset("css/root.css") }}'/>
+    <link rel='stylesheet' href='{{asset("css/custom.css") }}'/>
+
     <!-- load css -->
     <style type="text/css">
         @if($style_css)
@@ -217,6 +221,11 @@
     @if($script_js)
         {!! $script_js !!}
     @endif
+    $(document).ready(function($) {
+        $(document).on('click', '.system-update', function(){
+            $('#systemupdateModal').modal('show');
+        });
+    });
 </script>
 
 @stack('bottom')
