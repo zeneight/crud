@@ -65,8 +65,10 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-{{ cbLang('left') }}">
+                                @if(Session()->get('admin_privileges')!=2)
                                 <a href="{{ route('AdminCmsUsersControllerGetProfile') }}" class="btn btn-default btn-flat"><i
                                             class='fa fa-user'></i> {{cbLang("label_button_profile")}}</a>
+                                @endif
                             </div>
                             <div class="pull-{{ cbLang('right') }}">
                                 <a title='Lock Screen' href="{{ route('getLockScreen') }}" class='btn btn-default btn-flat'><i class='fa fa-key'></i></a>
