@@ -26,6 +26,7 @@
     @endif
 
     <link rel='stylesheet' href='{{asset("vendor/crudbooster/assets/css/main.css") }}'/>
+    <link href='{{asset("css/custom.css") }}' rel="stylesheet" type="text/css"/>
 
     <!-- custom css -->
     <link rel='stylesheet' href='{{asset("css/root.css") }}'/>
