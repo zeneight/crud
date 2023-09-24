@@ -12,7 +12,7 @@ return [
 
     'USER_TABLE' => 'cms_users',
 
-    'LOGIN_URL' => 'https://splp.denpasarkota.go.id/dev/simpeg/sso/',
+    'LOGIN_URL' => 'https://dev-old.denpasarkota.go.id/siria/public/api/login',
 
     'IMAGE_FIELDS_CANDIDATE' => 'image,picture,photo,photos,foto,gambar,thumbnail',
 
