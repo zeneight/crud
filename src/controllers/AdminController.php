@@ -135,8 +135,16 @@ class AdminController extends CBController
                 $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $hak_akses)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
     
                 $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
+
+                // dd($users);
     
                 Session::put('admin_id', $users['uname']);
+
+                Session::put('admin_peg_id', $users['pkey']);
+                Session::put('admin_passcode', null);
+                Session::put('admin_opd', "Pemerintah Kota Denpasar");
+                Session::put('admin_ssoid', null);
+
                 Session::put('admin_is_superadmin', $super_admin);
                 Session::put('admin_name', $users['name']);
                 Session::put('admin_photo', $photo);
