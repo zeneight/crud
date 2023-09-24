@@ -162,7 +162,7 @@ class AdminController extends CBController
     
                 return redirect(CRUDBooster::adminPath());
             } else {
-                return redirect()->route('getLogin')->with('message', cbLang('alert_password_wrong'));
+                return redirect()->route('getLogin')->with('message', $response['message']);
             }
         }
 
