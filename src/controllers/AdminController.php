@@ -109,7 +109,7 @@ class AdminController extends CBController
             }
 
         } else {
-            $response = Http::asForm()->post('http://192.168.17.25/siria/public/api/login', [
+            $response = Http::asForm()->post('https://splp.denpasarkota.go.id/dev/simpeg/sso/', [
                 // $user is the GenericUser instance created in
                 // the retrieveByCredentials() method above.
                 'username' => $username,
