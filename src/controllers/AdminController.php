@@ -116,7 +116,7 @@ class AdminController extends CBController
                 'password' => $password,
             ]);
 
-            dd($response);
+            // dd($response);
 
             if ($response['response_code']===200) {
                 $users = $response['content'];
