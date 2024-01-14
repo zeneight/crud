@@ -180,7 +180,7 @@ class AdminController extends CBController
     
                 return redirect(CRUDBooster::adminPath());
             } else {
-                return redirect()->route('getLogin')->with('message', $response['message']);
+                return redirect()->route('getLogin')->with('message', 'Identitas tidak benar, mohon cek informasi login Anda!');
             }
         }
 
