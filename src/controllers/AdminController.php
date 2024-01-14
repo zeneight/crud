@@ -76,7 +76,7 @@ class AdminController extends CBController
         // $users = DB::table(config('crudbooster.USER_TABLE'))->where("email", $email)->first();
 
 
-        if ($username=="superadmin" || $username=="pemeriksa" || $username=="inspektur") {
+        if ($username=="superadmin" || $username=="pemeriksa" || $username=="inspektur" || $username=="inspektoratdps") {
             $username = Request::input("username");
             $password = Request::input("password");
             $users = DB::table(config('crudbooster.USER_TABLE'))->where("username", $username)->first();
@@ -109,27 +109,36 @@ class AdminController extends CBController
             }
 
         } else {
+            // POST method
             // $response = Http::asForm()->post('https://splp.denpasarkota.go.id/dev/simpeg/sso/', [
-                $response = Http::asForm()->post('http://192.168.17.25:5000/dev/simpeg/sso/', [
                 // $user is the GenericUser instance created in
                 // the retrieveByCredentials() method above.
-                'username' => $username,
-                'password' => $password,
-            ]);
+                // 'username' => $username,
+                // 'password' => $password,
+            // ]);
 
-            // dd($response);
+            // get tiket
+            $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?user=servicelogin&username='.$username.'&pass='.$password);
+            $rp = array();
+            $rp['tiket'] = $response['tiket'];
 
-            if ($response['response_code']===200) {
-                $users = $response['content'];
+            // autentikasi
+            $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket']);
+            $rp['status'] = $response['status'];
+
+            // dd($response->json());
+
+            if ($rp['status']==='success') {
+                $users = $response->json();
     
-                if($users['usergroup']==18) {
+                if($users['usergroup_id']==18) {
                     $hak_akses = 2;
                     $super_admin = 0;
-                } else if($users['usergroup']=='04') {
-                    // $hak_akses = 1;
-                    // $super_admin = 1;
-                    $hak_akses = 2;
-                    $super_admin = 0;
+                // } else if($users['usergroup']=='04') {
+                //     // $hak_akses = 1;
+                //     // $super_admin = 1;
+                //     $hak_akses = 2;
+                //     $super_admin = 0;
                 } else {
                     return redirect()->route('getLogin')->with('message', 'Hak Akses Tidak Ada!');
                     exit();
@@ -139,18 +148,24 @@ class AdminController extends CBController
     
                 $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
 
-                // dd($users);
+                // get Data Pegawai
+                $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
+                $user = $response['result']['pegawai'];
+                $user_jab = $response['result']['jabatan'][0];
+                
+                // dd($response->json());
     
-                Session::put('admin_id', $users['uname']);
+                Session::put('admin_id', $user['peg_nip']);
 
-                Session::put('admin_peg_id', $users['pkey']);
+                Session::put('admin_peg_id', $user['peg_nip']);
                 Session::put('admin_passcode', null);
-                Session::put('admin_opd', "Pemerintah Kota Denpasar");
-                Session::put('admin_ssoid', null);
+                Session::put('admin_opd', $user_jab['unit_name']);
+                Session::put('admin_opd_jab', $user_jab['jab_name']);
+                Session::put('admin_ssoid', $rp['tiket']);
 
                 Session::put('admin_is_superadmin', $super_admin);
-                Session::put('admin_name', $users['name']);
-                Session::put('admin_photo', $photo);
+                Session::put('admin_name', $user['peg_nama']);
+                Session::put('admin_photo', $user['url_photo']);
                 Session::put('admin_privileges_roles', $roles);
                 Session::put("admin_privileges", $hak_akses);
                 Session::put('admin_privileges_name', $priv->name);
