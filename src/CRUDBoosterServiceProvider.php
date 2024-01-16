@@ -10,6 +10,8 @@ use crocodicstudio\crudbooster\commands\CrudboosterUpdateCommand;
 use Illuminate\Foundation\AliasLoader;
 use App;
 
+use Illuminate\Pagination\Paginator;
+
 class CRUDBoosterServiceProvider extends ServiceProvider
 {
     /**
@@ -36,6 +38,9 @@ class CRUDBoosterServiceProvider extends ServiceProvider
         }
 
         $this->customValidation();
+
+        // pagination laravel 8
+        Paginator::useBootstrap();
     }
 
     /**
