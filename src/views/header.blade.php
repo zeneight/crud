@@ -13,6 +13,12 @@
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+                <li>
+                    <a href="#!" class="system-update" data-toggle="system-update" title='System Update' aria-expanded="false">
+                        <i id='system-update-icon' class="fa fa-question-circle"></i>
+                        <span id='system-update_count' class="label label-danger">1</span>
+                    </a>
+                </li>
 
                 <li class="dropdown notifications-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title='Notifications' aria-expanded="false">

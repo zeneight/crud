@@ -28,6 +28,10 @@
     <link rel='stylesheet' href='{{asset("vendor/crudbooster/assets/css/main.css") }}'/>
     <link href='{{asset("css/custom.css") }}' rel="stylesheet" type="text/css"/>
 
+    <!-- custom css -->
+    <link rel='stylesheet' href='{{asset("css/root.css") }}'/>
+    <link rel='stylesheet' href='{{asset("css/custom.css") }}'/>
+
     <!-- load css -->
     <style type="text/css">
         @if($style_css)
@@ -206,6 +210,7 @@
 
 
 @include('crudbooster::admin_template_plugins')
+@include('dashboard_modal')
 
 <!-- load js -->
 @if($load_js)
@@ -218,6 +223,11 @@
     @if($script_js)
         {!! $script_js !!}
     @endif
+    $(document).ready(function($) {
+        $(document).on('click', '.system-update', function(){
+            $('#systemupdateModal').modal('show');
+        });
+    });
 </script>
 
 @stack('bottom')
