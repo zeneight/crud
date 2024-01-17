@@ -12,6 +12,8 @@ return [
 
     'USER_TABLE' => 'cms_users',
 
+    'LOGIN_URL' => 'http://192.168.17.25/siria/public/api/login',
+
     'IMAGE_FIELDS_CANDIDATE' => 'image,picture,photo,photos,foto,gambar,thumbnail',
 
     'PASSWORD_FIELDS_CANDIDATE' => 'password,pass,pwd,passwrd,sandi,pin',

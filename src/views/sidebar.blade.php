@@ -6,10 +6,10 @@
 
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel">
-            <div class="pull-{{ cbLang('left') }} image">
+            <!-- <div class="pull-{{ cbLang('left') }} image">
                 <img src="{{ CRUDBooster::myPhoto() }}" class="img-circle" alt="{{ cbLang('user_image') }}"/>
-            </div>
-            <div class="pull-{{ cbLang('left') }} info">
+            </div> -->
+            <div style="color: #fff">
                 <p>{{ CRUDBooster::myName() }}</p>
                 <!-- Status -->
                 <a href="#"><i class="fa fa-circle text-success"></i> {{ cbLang('online') }}</a>
@@ -55,7 +55,7 @@
 
 
 
-                @if(CRUDBooster::isSuperadmin())
+                @if(Session::get('admin_is_superadmin'))
                     <li class="header">{{ cbLang('SUPERADMIN') }}</li>
                     <li class='treeview'>
                         <a href='#'><i class='fa fa-key'></i> <span>{{ cbLang('Privileges_Roles') }}</span> <i

@@ -2,7 +2,7 @@
 @section('content')
     @push('bottom')
         <script src="{{asset('vendor/laravel-filemanager/js/lfm.js')}}"></script>
-        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+        <script src="//cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
         <script>
             $(function () {
                 $('.label-setting').hover(function () {
