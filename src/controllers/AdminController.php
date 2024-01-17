@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
-use Illuminate\Support\Facades\Http;
-
 class AdminController extends CBController
 {
     function getIndex()
@@ -61,7 +59,7 @@ class AdminController extends CBController
     {
 
         $validator = Validator::make(Request::all(), [
-            'username' => 'required',
+            'email' => 'required|email|exists:'.config('crudbooster.USER_TABLE'),
             'password' => 'required',
         ]);
 
@@ -71,123 +69,36 @@ class AdminController extends CBController
             return redirect()->back()->with(['message' => implode(', ', $message), 'message_type' => 'danger']);
         }
 
-        $username = Request::input("username");
+        $email = Request::input("email");
         $password = Request::input("password");
-        // $users = DB::table(config('crudbooster.USER_TABLE'))->where("email", $email)->first();
+        $users = DB::table(config('crudbooster.USER_TABLE'))->where("email", $email)->first();
 
+        if (\Hash::check($password, $users->password)) {
+            $priv = DB::table("cms_privileges")->where("id", $users->id_cms_privileges)->first();
 
-        if ($username=="superadmin" || $username=="pemeriksa" || $username=="inspektur" || $username=="inspektoratdps") {
-            $username = Request::input("username");
-            $password = Request::input("password");
-            $users = DB::table(config('crudbooster.USER_TABLE'))->where("username", $username)->first();
+            $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $users->id_cms_privileges)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
 
-            if (\Hash::check($password, $users->password)) {
-                $priv = DB::table("cms_privileges")->where("id", $users->id_cms_privileges)->first();
-    
-                $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $users->id_cms_privileges)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
-    
-                $photo = ($users->photo) ? asset($users->photo) : asset('vendor/crudbooster/avatar.jpg');
-                Session::put('admin_id', $users->id);
-                Session::put('admin_is_superadmin', $priv->is_superadmin);
-                Session::put('admin_name', $users->name);
-                Session::put('admin_photo', $photo);
-                Session::put('admin_privileges_roles', $roles);
-                Session::put("admin_privileges", $users->id_cms_privileges);
-                Session::put('admin_privileges_name', $priv->name);
-                Session::put('admin_lock', 0);
-                Session::put('theme_color', $priv->theme_color);
-                Session::put("appname", get_setting('appname'));
-    
-                CRUDBooster::insertLog(cbLang("log_login", ['username' => $users->username, 'ip' => Request::server('REMOTE_ADDR')]));
-    
-                $cb_hook_session = new \App\Http\Controllers\CBHook;
-                $cb_hook_session->afterLogin();
-    
-                return redirect(CRUDBooster::adminPath());
-            } else {
-                return redirect()->route('getLogin')->with('message', cbLang('alert_password_wrong'));
-            }
+            $photo = ($users->photo) ? asset($users->photo) : asset('vendor/crudbooster/avatar.jpg');
+            Session::put('admin_id', $users->id);
+            Session::put('admin_is_superadmin', $priv->is_superadmin);
+            Session::put('admin_name', $users->name);
+            Session::put('admin_photo', $photo);
+            Session::put('admin_privileges_roles', $roles);
+            Session::put("admin_privileges", $users->id_cms_privileges);
+            Session::put('admin_privileges_name', $priv->name);
+            Session::put('admin_lock', 0);
+            Session::put('theme_color', $priv->theme_color);
+            Session::put("appname", get_setting('appname'));
 
+            CRUDBooster::insertLog(cbLang("log_login", ['email' => $users->email, 'ip' => Request::server('REMOTE_ADDR')]));
+
+            $cb_hook_session = new \App\Http\Controllers\CBHook;
+            $cb_hook_session->afterLogin();
+
+            return redirect(CRUDBooster::adminPath());
         } else {
-            // POST method
-            // $response = Http::asForm()->post('https://splp.denpasarkota.go.id/dev/simpeg/sso/', [
-                // $user is the GenericUser instance created in
-                // the retrieveByCredentials() method above.
-                // 'username' => $username,
-                // 'password' => $password,
-            // ]);
-
-            // get tiket
-            $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?user=servicelogin&username='.$username.'&pass='.$password);
-            $rp = array();
-            $rp['tiket'] = $response['tiket'];
-
-            // autentikasi
-            $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket']);
-            $rp['status'] = $response['status'];
-
-            // dd($response->json());
-
-            if ($rp['status']==='success') {
-                $users = $response->json();
-    
-                if($users['usergroup_id']==18) {
-                    $hak_akses = 2;
-                    $super_admin = 0;
-                // } else if($users['usergroup']=='04') {
-                //     // $hak_akses = 1;
-                //     // $super_admin = 1;
-                //     $hak_akses = 2;
-                //     $super_admin = 0;
-                } else {
-                    return redirect()->route('getLogin')->with('message', 'Hak Akses Tidak Ada!');
-                    exit();
-                }
-                $priv = DB::table("cms_privileges")->where("id", $hak_akses)->first();
-                $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $hak_akses)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
-    
-                $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
-
-                // get Data Pegawai
-                $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
-                $user = $response['result']['pegawai'];
-                $user_jab = $response['result']['jabatan'][0];
-                
-                // dd($response->json());
-    
-                Session::put('admin_id', $user['peg_nip']);
-
-                Session::put('admin_peg_id', $user['peg_nip']);
-                Session::put('admin_passcode', null);
-                Session::put('admin_opd', $user_jab['unit_name']);
-                Session::put('admin_opd_jab', $user_jab['jab_name']);
-                Session::put('admin_ssoid', $rp['tiket']);
-
-                Session::put('admin_is_superadmin', $super_admin);
-                Session::put('admin_name', $user['peg_nama']);
-                Session::put('admin_photo', $user['url_photo']);
-                Session::put('admin_privileges_roles', $roles);
-                Session::put("admin_privileges", $hak_akses);
-                Session::put('admin_privileges_name', $priv->name);
-                Session::put('admin_lock', 0);
-                Session::put('theme_color', $priv->theme_color);
-                Session::put("appname", get_setting('appname'));
-    
-                CRUDBooster::insertLog(cbLang("log_login", ['email' => $response['content']['name'], 'ip' => Request::server('REMOTE_ADDR')]));
-    
-                $cb_hook_session = new \App\Http\Controllers\CBHook;
-                $cb_hook_session->afterLogin();
-    
-                return redirect(CRUDBooster::adminPath());
-            } else {
-                return redirect()->route('getLogin')->with('message', 'Identitas tidak benar, mohon cek informasi login Anda!');
-            }
+            return redirect()->route('getLogin')->with('message', cbLang('alert_password_wrong'));
         }
-
-        // return $response->json();
-        // dd($response['content']);
-
-        
     }
 
     public function getForgot()
@@ -229,10 +140,8 @@ class AdminController extends CBController
     public function getLogout()
     {
 
-        // $me = CRUDBooster::me();
-        $name = Session::get('admin_name');
-
-        CRUDBooster::insertLog(cbLang("log_logout", ['email' => $name]));
+        $me = CRUDBooster::me();
+        CRUDBooster::insertLog(cbLang("log_logout", ['email' => $me->email]));
 
         Session::flush();
 
