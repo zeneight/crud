@@ -46,6 +46,10 @@
     </script>
 @endpush
 
+@php
+if(!isset($build_query)) $build_query = null;
+@endphp
+
 <form id='form-table' method='post' action='{{CRUDBooster::mainpath("action-selected")}}'>
     <input type='hidden' name='button_name' value=''/>
     <input type='hidden' name='_token' value='{{csrf_token()}}'/>
@@ -60,7 +64,7 @@
             <?php endif;?>
             <?php
             foreach ($columns as $col) {
-                if ($col['visible'] === FALSE) continue;
+                if (isset($col['visible']) && $col['visible'] === FALSE) continue;
 
                 $sort_column = Request::get('filter_column');
                 $colname = $col['label'];
@@ -141,7 +145,7 @@
                     @endif
 
                     @foreach($hc as $j=>$h)
-                        <td {{ $columns[$j]['style'] or ''}}>{!! $h !!}</td>
+                        <td {{ $columns[$j]['style'] ?? null}}>{!! $h !!}</td>
                     @endforeach
                 </tr>
                 @endforeach
@@ -160,7 +164,7 @@
 
             <?php
             foreach ($columns as $col) {
-                if ($col['visible'] === FALSE) continue;
+                if (isset($col['visible']) === FALSE) continue;
                 $colname = $col['label'];
                 $width = (isset($col['width'])) ?$col['width']: "auto";
 		$style = (isset($col['style'])) ? $col['style']: "";
@@ -189,6 +193,7 @@ $total = $result->total();
         : {{ $from }} {{ cbLang("filter_rows_to") }} {{ $to }} {{ cbLang("filter_rows_of") }} {{ $total }}</span></div>
 
 @if($columns)
+
     @push('bottom')
         <script>
             $(function () {
@@ -312,7 +317,7 @@ $total = $result->total();
                     <form method='get' action=''>
                         <div class="modal-body">
                             <?php foreach($columns as $key => $col):?>
-                            <?php if (isset($col['image']) || isset($col['download']) || $col['visible'] === FALSE) continue;?>
+                            <?php if (isset($col['image']) || isset($col['download']) || isset($col['visible']) === FALSE) continue;?>
 
                             <div class='form-group'>
 
@@ -470,7 +475,7 @@ $total = $result->total();
                         <div class="modal-body">
                             <div class="form-group">
                                 <label>{{cbLang("export_dialog_filename")}}</label>
-                                <input type='text' name='filename' class='form-control' required value='Report {{ $module_name }} - {{date("d M Y")}}'/>
+                                <input type='text' name='filename' class='form-control' required value='Report {{ $module_name ?? null }} - {{date("d M Y")}}'/>
                                 <div class='help-block'>
                                     {{cbLang("export_dialog_help_filename")}}
                                 </div>
@@ -507,22 +512,7 @@ $total = $result->total();
 
                                 <div class="form-group">
                                     <label>{{cbLang("export_dialog_page_size")}}</label>
-                                    <select class='form-control' name='page_size'>
-                                        <option <?=($setting->default_paper_size == 'Letter') ? "selected" : ""?> value='Letter'>Letter</option>
-                                        <option <?=($setting->default_paper_size == 'Legal') ? "selected" : ""?> value='Legal'>Legal</option>
-                                        <option <?=($setting->default_paper_size == 'Ledger') ? "selected" : ""?> value='Ledger'>Ledger</option>
-                                        <?php for($i = 0;$i <= 8;$i++):
-                                        $select = ($setting->default_paper_size == 'A'.$i) ? "selected" : "";
-                                        ?>
-                                        <option <?=$select?> value='A{{$i}}'>A{{$i}}</option>
-                                        <?php endfor;?>
-
-                                        <?php for($i = 0;$i <= 10;$i++):
-                                        $select = ($setting->default_paper_size == 'B'.$i) ? "selected" : "";
-                                        ?>
-                                        <option <?=$select?> value='B{{$i}}'>B{{$i}}</option>
-                                        <?php endfor;?>
-                                    </select>
+                                    <input type="hidden" name='page_size' value='A4'>
                                     <div class='help-block'><input type='checkbox' name='default_paper_size'
                                                                    value='1'/> {{cbLang("export_dialog_set_default")}}</div>
                                 </div>

@@ -21,7 +21,7 @@
             <div class="panel-body" style="padding:20px 0px 0px 0px">
                 <?php
                 $action = (@$row) ? CRUDBooster::mainpath("edit-save/$row->id") : CRUDBooster::mainpath("add-save");
-                $return_url = ($return_url) ?: g('return_url');
+                $return_url = (isset($return_url)) ?: g('return_url');
                 ?>
                 <form class='form-horizontal' method='post' id="form" enctype="multipart/form-data" action='{{$action}}'>
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -33,10 +33,11 @@
                     @endif
                     <div class="box-body" id="parent-form-area">
 
-                        @if($command == 'detail')
+                        @if(isset($command) && $command == 'detail')
                             @include("crudbooster::default.form_detail")
                         @else
                             @include("crudbooster::default.form_body")
+                            @php $command = null; @endphp
                         @endif
                     </div><!-- /.box-body -->
 

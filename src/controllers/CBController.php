@@ -522,7 +522,7 @@ class CBController extends Controller
         }
 
         $mainpath = CRUDBooster::mainpath();
-        $orig_mainpath = $this->data['mainpath'];
+        $orig_mainpath = $this->data['mainpath'] ?? null;
         $title_field = $this->title_field;
         $html_contents = [];
         $page = (request('page')) ? request('page') : 1;
@@ -541,7 +541,7 @@ class CBController extends Controller
             }
 
             foreach ($columns_table as $col) {
-                if ($col['visible'] === false) {
+                if (isset($col['visible']) && $col['visible']  === false) {
                     continue;
                 }
 
@@ -567,16 +567,16 @@ class CBController extends Controller
                     }
                 }
 
-                if ($col['str_limit']) {
+                if (isset($col['str_limit'])) {
                     $value = trim(strip_tags($value));
                     $value = str_limit($value, $col['str_limit']);
                 }
 
-                if ($col['nl2br']) {
+                if (isset($col['nl2br'])) {
                     $value = nl2br($value);
                 }
 
-                if ($col['callback_php']) {
+                if (isset($col['callback_php'])) {
                     foreach ($row as $k => $v) {
                         $col['callback_php'] = str_replace("[".$k."]", $v, $col['callback_php']);
                     }
@@ -607,6 +607,7 @@ class CBController extends Controller
             } //end foreach columns_table
 
             if ($this->button_table_action):
+                $parent_field = $this->parent_field;
 
                 $button_action_style = $this->button_action_style;
                 $html_content[] = "<div class='button_action' style='text-align:right'>".view('crudbooster::components.action', compact('addaction', 'row', 'button_action_style', 'parent_field'))->render()."</div>";
@@ -860,13 +861,13 @@ class CBController extends Controller
                 continue;
             }
 
-            if ($di['type'] != 'upload') {
+            if (isset($di['type']) && $di['type'] != 'upload') {
                 if (@$di['required']) {
                     $ai[] = 'required';
                 }
             }
 
-            if ($di['type'] == 'upload') {
+            if (isset($di['type']) && $di['type'] == 'upload') {
                 if ($id) {
                     $row = DB::table($this->table)->where($this->primary_key, $id)->first();
                     if ($row->{$di['name']} == '') {
@@ -892,11 +893,11 @@ class CBController extends Controller
                 continue;
             }
 
-            if ($di['type'] == 'money') {
+            if (isset($di['type']) && $di['type'] == 'money') {
                 $request_all[$name] = preg_replace('/[^\d-]+/', '', $request_all[$name]);
             }
 
-            if ($di['type'] == 'child') {
+            if (isset($di['type']) && $di['type'] == 'child') {
                 $slug_name = str_slug($di['label'], '');
                 foreach ($di['columns'] as $child_col) {
                     if (isset($child_col['validation'])) {
@@ -994,7 +995,7 @@ class CBController extends Controller
                 continue;
             }
 
-            if ($ro['exception']) {
+            if (isset($ro['exception'])) {
                 continue;
             }
 
@@ -1008,21 +1009,21 @@ class CBController extends Controller
                 }
             }
 
-            if ($ro['type'] == 'checkbox' && $ro['relationship_table']) {
+            if (isset($ro['type']) && $ro['type'] == 'checkbox' && $ro['relationship_table']) {
                 continue;
             }
 
-            if ($ro['type'] == 'select2' && $ro['relationship_table']) {
+            if (isset($ro['type']) && $ro['type'] == 'select2' && $ro['relationship_table']) {
                 continue;
             }
 
             $inputdata = request($name);
 
-            if ($ro['type'] == 'money') {
+            if (isset($ro['type']) && $ro['type'] == 'money') {
                 $inputdata = preg_replace('/[^\d-]+/', '', $inputdata);
             }
 
-            if ($ro['type'] == 'child') {
+            if (isset($ro['type']) && $ro['type'] == 'child') {
                 continue;
             }
 
@@ -1047,7 +1048,7 @@ class CBController extends Controller
                 }
             }
 
-            if ($ro['type'] == 'checkbox') {
+            if (isset($ro['type']) && $ro['type'] == 'checkbox') {
 
                 if (is_array($inputdata)) {
                     if ($ro['datatable'] != '') {
@@ -1063,7 +1064,7 @@ class CBController extends Controller
             }
 
             //multitext colomn
-            if ($ro['type'] == 'multitext') {
+            if (isset($ro['type']) && $ro['type'] == 'multitext') {
                 $name = $ro['name'];
                 $multitext = "";
                 $maxI = ($this->arr[$name])?count($this->arr[$name]):0;
@@ -1074,7 +1075,7 @@ class CBController extends Controller
                 $this->arr[$name] = $multitext;
             }
 
-            if ($ro['type'] == 'googlemaps') {
+            if (isset($ro['type']) && $ro['type'] == 'googlemaps') {
                 if ($ro['latitude'] && $ro['longitude']) {
                     $latitude_name = $ro['latitude'];
                     $longitude_name = $ro['longitude'];
@@ -1083,7 +1084,7 @@ class CBController extends Controller
                 }
             }
 
-            if ($ro['type'] == 'select' || $ro['type'] == 'select2') {
+            if (isset($ro['type']) && $ro['type'] == 'select' || isset($ro['type']) && $ro['type'] == 'select2') {
                 if ($ro['datatable']) {
                     if ($inputdata == '') {
                         $this->arr[$name] = 0;
@@ -1093,7 +1094,7 @@ class CBController extends Controller
 
             if (@$ro['type'] == 'upload') {
 
-                $this->arr[$name] = CRUDBooster::uploadFile($name, $ro['encrypt'] || $ro['upload_encrypt'], $ro['resize_width'], $ro['resize_height'], CB::myId());
+                $this->arr[$name] = CRUDBooster::uploadFile($name, isset($ro['encrypt']) || isset($ro['upload_encrypt']), $ro['resize_width'], $ro['resize_height'], CB::myId());
 
                 if (! $this->arr[$name]) {
                     $this->arr[$name] = request('_'.$name);
@@ -1299,7 +1300,7 @@ class CBController extends Controller
             $inputdata = request($name);
 
             //Insert Data Checkbox if Type Datatable
-            if ($ro['type'] == 'checkbox') {
+            if (isset($ro['type']) && $ro['type'] == 'checkbox') {
                 if ($ro['relationship_table']) {
                     $datatable = explode(",", $ro['datatable'])[0];
 
@@ -1320,7 +1321,7 @@ class CBController extends Controller
                 }
             }
 
-            if ($ro['type'] == 'select2') {
+            if (isset($ro['type']) && $ro['type'] == 'select2') {
                 if ($ro['relationship_table'] && $ro["datatable_orig"] == "") {
                     $datatable = explode(",", $ro['datatable'])[0];
 
@@ -1346,7 +1347,7 @@ class CBController extends Controller
                 }
             }
 
-            if ($ro['type'] == 'child') {
+            if (isset($ro['type']) && $ro['type'] == 'child') {
                 $name = str_slug($ro['label'], '');
                 $columns = $ro['columns'];
                 $getColName = request($name.'-'.$columns[0]['name']);

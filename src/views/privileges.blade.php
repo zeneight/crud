@@ -1,15 +1,20 @@
 @extends('crudbooster::admin_template')
 
 @section('content')
+    @php
+    if(!isset($row)) {
+        $row = new stdClass();
+        $row->id = null;
+        $row->is = null;
+    }
+    @endphp
 
     <div style="width:750px;margin:0 auto ">
 
 
-        @if(CRUDBooster::getCurrentMethod() != 'getProfile')
-            <p><a href='{{CRUDBooster::mainpath()}}'>{{cbLang("form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>
+    @if(CRUDBooster::getCurrentMethod() != 'getProfile')
+        <p><a href='{{CRUDBooster::mainpath()}}'>{{cbLang("form_back_to_list",['module'=>CRUDBooster::getCurrentModule()->name])}}</a></p>
     @endif
-
-
 
     <!-- Box -->
         <div class="box box-primary">
@@ -160,7 +165,7 @@
                                     <td><?php echo $no++;?></td>
                                     <td>{{$modul->name}}</td>
                                     <td class='info' align="center"><input type='checkbox' title='Check All Horizontal'
-                                                                           <?=($roles->is_create && $roles->is_read && $roles->is_edit && $roles->is_delete) ? "checked" : ""?> class='select_horizontal'/>
+                                                                           <?=(isset($roles->is_create) && $roles->is_read && $roles->is_edit && $roles->is_delete) ? "checked" : ""?> class='select_horizontal'/>
                                     </td>
                                     <td class='active' align="center"><input type='checkbox' class='is_visible' name='privileges[<?=$modul->id?>][is_visible]'
                                                                              <?=@$roles->is_visible ? "checked" : ""?> value='1'/></td>

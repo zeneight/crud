@@ -30,7 +30,7 @@
                 &nbsp; {{cbLang('form_back_to_list',['module'=>urldecode(g('label'))])}}</a></p>
     @endif
 
-    @if($parent_table)
+    @if(isset($parent_table))
         <div class="box box-default">
             <div class="box-body table-responsive no-padding">
                 <table class='table table-bordered'>
@@ -84,7 +84,7 @@
             <div class="box-tools pull-{{ cbLang('right') }}" style="position: relative;margin-top: -5px;margin-right: -10px">
 
                 @if($button_filter)
-                    <a style="margin-top:-23px" href="javascript:void(0)" id='btn_advanced_filter' data-url-parameter='{{$build_query}}'
+                    <a style="margin-top:-23px" href="javascript:void(0)" id='btn_advanced_filter' data-url-parameter='{{$build_query ?? null}}'
                        title='{{cbLang('filter_dialog_title')}}' class="btn btn-sm btn-default {{(Request::get('filter_column'))?'active':''}}">
                         <i class="fa fa-filter"></i> {{cbLang("button_filter")}}
                     </a>

@@ -2,8 +2,10 @@
 
 //Loading Assets
 $asset_already = [];
+
+// dd($forms);
 foreach($forms as $form) {
-$type = @$form['type'] ?: 'text';
+if(!isset($form['type'])) $type = 'text'; else $type = @$form['type'];
 $name = $form['name'];
 
 if (in_array($type, $asset_already)) continue;
@@ -35,7 +37,7 @@ $validation_raw = isset($form['validation']) ? explode('|', $form['validation'])
 if ($validation_raw) {
     foreach ($validation_raw as $vr) {
         $vr_a = explode(':', $vr);
-        if ($vr_a[1]) {
+        if ($vr_a[1] ?? null) {
             $key = $vr_a[0];
             $validation[$key] = $vr_a[1];
         } else {
@@ -61,8 +63,10 @@ if ($join && @$row) {
     $join_query_[$join_table] = DB::table($join_table)->select($join_title)->where("id", $row->{'id_'.$join_table})->first();
     $value = @$join_query_[$join_table]->{$join_title};
 }
-$form['type'] = ($form['type']) ?: 'text';
-$type = @$form['type'];
+// $form['type'] = (isset($form['type'])) ?: 'text';
+// $type = @$form['type'];
+if(!isset($form['type'])) $type = 'text'; else $type = @$form['type'];
+
 $required = (@$form['required']) ? "required" : "";
 $required = (@strpos($form['validation'], 'required') !== FALSE) ? "required" : $required;
 $readonly = (@$form['readonly']) ? "readonly" : "";

@@ -10,7 +10,7 @@
             <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
             <input type="email" name="{{$name}}" style="display: none">
             <input type='email' title="{{$form['label']}}"
-                   {{$required}} {{$readonly}} {!!$placeholder!!} {{$disabled}} {{$validation['max']?"maxlength=".$validation['max']:""}} class='form-control'
+                   {{$required}} {{$readonly}} {!!$placeholder!!} {{$disabled}} {{isset($validation['max'])?"maxlength=".$validation['max']:""}} class='form-control'
                    name="{{$name}}" id="{{$name}}" value='{{$value}}'/>
         </div>
         <div class="text-danger">{!! $errors->first($name)?"<i class='fa fa-info-circle'></i> ".$errors->first($name):"" !!}</div>
