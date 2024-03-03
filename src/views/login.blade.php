@@ -64,7 +64,7 @@
                  src='{{ CRUDBooster::getSetting("logo")?asset(CRUDBooster::getSetting('logo')):asset('vendor/crudbooster/assets/logo_crudbooster.png') }}'
                  style='max-width: 100%;max-height:170px'/>
         </a>
-        <p>{{ CRUDBooster::getSetting('appname') }}</p>
+        <h3 style="color: #000;font-weight: bold;">{{ CRUDBooster::getSetting('appname') }}</h3>
     </div><!-- /.login-logo -->
     <div class="login-box-body">
 
