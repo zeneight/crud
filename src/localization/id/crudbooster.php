@@ -5,7 +5,7 @@ return [
     'text_forgot_password' => 'Lupa Password ?',
     'page_title_login' => 'Login Panel',
     'page_title_forgot' => 'Lupa Password ?',
-    'text_login_footer' => 'Dibuat dengan cinta - v1.0',
+    'text_login_footer' => 'Pemerintah Kota Denpasar',
     'forgot_message' => 'Masukkan email terdaftar anda untuk meminta password ulang.',
     "forgot_text_try_again" => "Cobalah login kembali ?",
     'text_no_notification' => "Anda mempunya 0 notifikasi",
