@@ -63,7 +63,7 @@ class AdminController extends CBController
         $recaptcha_response = Request::input('g-recaptcha-response');
 
         if (is_null($recaptcha_response)) {
-            return redirect()->route('getLogin')->with('message', 'Mohon untuk centang dan selesaikan Captcha!');
+            return redirect()->back()->with('message', 'Mohon centang dan selesaikan Captcha!');
         }
 
         $url = "https://www.google.com/recaptcha/api/siteverify";
