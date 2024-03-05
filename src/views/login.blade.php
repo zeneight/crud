@@ -100,7 +100,7 @@
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div style="margin-bottom:5px">
-                <div class="g-recaptcha mt-4" data-sitekey={{config('services.recaptcha.key')}}></div>
+                <div class="g-recaptcha mt-4" data-sitekey="{{config('services.recaptcha.key')}}"></div>
             </div>
             <div style="margin-bottom:10px" class='row'>
                 <div class='col-xs-12'>
