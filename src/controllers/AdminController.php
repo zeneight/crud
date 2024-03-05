@@ -63,7 +63,7 @@ class AdminController extends CBController
         $recaptcha_response = Request::input('g-recaptcha-response');
 
         if (is_null($recaptcha_response)) {
-            return redirect()->back()->with('status', 'Mohon centang dan selesaikan Captcha!');
+            return redirect()->route('getLogin')->with('message', 'Mohon untuk centang dan selesaikan Captcha!');
         }
 
         $url = "https://www.google.com/recaptcha/api/siteverify";
@@ -78,7 +78,7 @@ class AdminController extends CBController
         $result = json_decode($response);
 
         if (!$response->successful() && $result->success !== true) {
-            return redirect()->back()->with('status', 'Mohon maaf untuk mencoba lagi centang dan selesaikan Captcha!');
+            return redirect()->route('getLogin')->with('message', 'Mohon maaf untuk mencoba lagi centang dan selesaikan Captcha!');
         }
 
         // ------------------------------------------
