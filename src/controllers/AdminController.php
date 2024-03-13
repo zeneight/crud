@@ -100,15 +100,67 @@ class AdminController extends CBController
 
         $users = DB::table(config('crudbooster.USER_TABLE'))->where("username", $username)->first();
         if ($users !== null) {
-            // $username = Request::input("username");
-            // $password = Request::input("password");
-            // $users = DB::table(config('crudbooster.USER_TABLE'))->where("username", $username)->first();
+            // user pemeriksa dan inspektur
+            if($users->id_cms_privileges==4 || $users->id_cms_privileges==3) {
+                // get tiket
+                $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?user=servicelogin&username='.$username.'&pass='.$password);
+                $rp = array();
+                $rp['tiket'] = $response['tiket'];
 
-            if (\Hash::check($password, $users->password)) {
+                // autentikasi
+                $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket']);
+                $rp['status'] = $response['status'];
+
+                if ($rp['status']==='success') {
+                    $users = $response->json();
+        
+                    $hak_akses = $users->id_cms_privileges;
+                    $super_admin = 0;
+                    
+                    $priv = DB::table("cms_privileges")->where("id", $hak_akses)->first();
+                    $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $hak_akses)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
+        
+                    $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
+    
+                    // get Data Pegawai
+                    $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
+                    $user = $response['result']['pegawai'];
+                    $user_jab = $response['result']['jabatan'][0];
+                    
+                    // dd($response->json());
+        
+                    Session::put('admin_id', $user['peg_nip']);
+    
+                    Session::put('admin_peg_id', $user['peg_nip']);
+                    Session::put('admin_passcode', null);
+                    Session::put('admin_opd', $user_jab['unit_name']);
+                    Session::put('admin_opd_jab', $user_jab['jab_name']);
+                    Session::put('admin_ssoid', $rp['tiket']);
+    
+                    Session::put('admin_is_superadmin', $super_admin);
+                    Session::put('admin_name', $user['peg_nama']);
+                    Session::put('admin_photo', $user['url_photo']);
+                    Session::put('admin_privileges_roles', $roles);
+                    Session::put("admin_privileges", $hak_akses);
+                    Session::put('admin_privileges_name', $priv->name);
+                    Session::put('admin_lock', 0);
+                    Session::put('theme_color', $priv->theme_color);
+                    Session::put("appname", get_setting('appname'));
+        
+                    CRUDBooster::insertLog(cbLang("log_login", ['email' => $response['content']['name'], 'ip' => Request::server('REMOTE_ADDR')]));
+        
+                    $cb_hook_session = new \App\Http\Controllers\CBHook;
+                    $cb_hook_session->afterLogin();
+        
+                    return redirect(CRUDBooster::adminPath());
+                } else {
+                    return redirect()->route('getLogin')->with('message', 'Identitas tidak benar, mohon cek informasi login Anda!');
+                }
+            } else if (\Hash::check($password, $users->password)) {
                 $priv = DB::table("cms_privileges")->where("id", $users->id_cms_privileges)->first();
     
                 $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $users->id_cms_privileges)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
-                
+
                 Session::put('admin_id', $users->id);
                 Session::put('admin_is_superadmin', $priv->is_superadmin);
                 Session::put('admin_name', $users->name);
