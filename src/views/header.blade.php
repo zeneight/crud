@@ -78,7 +78,8 @@
                             </div>
                             <div class="pull-{{ cbLang('right') }}">
                                 <!-- <a title='Lock Screen' href="{{ route('getLockScreen') }}" class='btn btn-default btn-flat'><i class='fa fa-key'></i></a> -->
-                                <a href="javascript:void(0)" onclick="swal({
+                                <a href="{{ route('getLogout') }}" title="{{cbLang('button_logout')}}" class="btn btn-danger btn-flat"><i class='fa fa-power-off'></i></a>
+                                <!-- <a href="javascript:void(0)" onclick="swal({
                                         title: '{{cbLang('alert_want_to_logout')}}',
                                         type:'info',
                                         showCancelButton:true,
@@ -90,7 +91,7 @@
                                         }, function(){
                                         location.href = '{{ route("getLogout") }}';
 
-                                        });" title="{{cbLang('button_logout')}}" class="btn btn-danger btn-flat"><i class='fa fa-power-off'></i></a>
+                                        });" title="{{cbLang('button_logout')}}" class="btn btn-danger btn-flat"><i class='fa fa-power-off'></i></a> -->
                             </div>
                         </li>
                     </ul>
