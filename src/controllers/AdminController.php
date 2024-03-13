@@ -108,23 +108,7 @@ class AdminController extends CBController
                 $priv = DB::table("cms_privileges")->where("id", $users->id_cms_privileges)->first();
     
                 $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $users->id_cms_privileges)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
-    
-                if($users->id_cms_privileges==4 || $users->id_cms_privileges==3) {
-                    // get tiket
-                    $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?user=servicelogin&username='.$username.'&pass='.$password);
-                    $rp = array();
-                    $rp['tiket'] = $response['tiket'];
-
-                    // autentikasi
-                    $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket']);
-                    $rp['status'] = $response['status'];
-
-                    $users = $response->json();
-                    $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
-                } else {
-                    $photo = ($users->photo) ? asset($users->photo) : asset('vendor/crudbooster/avatar.jpg');
-                }
-
+                
                 Session::put('admin_id', $users->id);
                 Session::put('admin_is_superadmin', $priv->is_superadmin);
                 Session::put('admin_name', $users->name);
