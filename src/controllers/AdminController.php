@@ -112,7 +112,7 @@ class AdminController extends CBController
                 $rp['status'] = $response['status'];
 
                 if ($rp['status']==='success') {
-                    $users = $response->json();
+                    $user_api = $response->json();
         
                     $hak_akses = $users->id_cms_privileges;
                     $super_admin = 0;
@@ -120,7 +120,7 @@ class AdminController extends CBController
                     $priv = DB::table("cms_privileges")->where("id", $hak_akses)->first();
                     $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $hak_akses)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
         
-                    $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
+                    $photo = ($user_api['photo']) ? asset($user_api['photo']) : asset('vendor/crudbooster/avatar.jpg');
     
                     // get Data Pegawai
                     $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
@@ -203,12 +203,12 @@ class AdminController extends CBController
             // dd($response->json());
 
             if ($rp['status']==='success') {
-                $users = $response->json();
+                $user_api = $response->json();
     
-                if($users['usergroup_id']==18) {
+                if($user_api['usergroup_id']==18) {
                     $hak_akses = 2;
                     $super_admin = 0;
-                // } else if($users['usergroup']=='04') {
+                // } else if($user_api['usergroup']=='04') {
                 //     // $hak_akses = 1;
                 //     // $super_admin = 1;
                 //     $hak_akses = 2;
@@ -220,7 +220,7 @@ class AdminController extends CBController
                 $priv = DB::table("cms_privileges")->where("id", $hak_akses)->first();
                 $roles = DB::table('cms_privileges_roles')->where('id_cms_privileges', $hak_akses)->join('cms_moduls', 'cms_moduls.id', '=', 'id_cms_moduls')->select('cms_moduls.name', 'cms_moduls.path', 'is_visible', 'is_create', 'is_read', 'is_edit', 'is_delete')->get();
     
-                $photo = ($users['photo']) ? asset($users['photo']) : asset('vendor/crudbooster/avatar.jpg');
+                $photo = ($user_api['photo']) ? asset($user_api['photo']) : asset('vendor/crudbooster/avatar.jpg');
 
                 // get Data Pegawai
                 $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
