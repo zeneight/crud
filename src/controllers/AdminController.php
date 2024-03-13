@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 class AdminController extends CBController
 {
@@ -59,6 +60,28 @@ class AdminController extends CBController
 
     public function postLogin()
     {
+        $recaptcha_response = Request::input('g-recaptcha-response');
+
+        if (is_null($recaptcha_response)) {
+            return redirect()->back()->with('message', 'Mohon centang dan selesaikan Captcha!');
+        }
+
+        $url = "https://www.google.com/recaptcha/api/siteverify";
+
+        $body = [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => $recaptcha_response,
+            'remoteip' => IpUtils::anonymize(Request::ip()) //anonymize the ip to be GDPR compliant. Otherwise just pass the default ip address
+        ];
+
+        $response = Http::asForm()->post($url, $body);
+        $result = json_decode($response);
+
+        if (!$response->successful() && $result->success !== true) {
+            return redirect()->route('getLogin')->with('message', 'Mohon maaf untuk mencoba lagi centang dan selesaikan Captcha!');
+        }
+
+        // ------------------------------------------
 
         $validator = Validator::make(Request::all(), [
             'username' => 'required',

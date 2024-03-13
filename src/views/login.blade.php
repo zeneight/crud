@@ -99,6 +99,9 @@
                 <input autocomplete='off' type="password" class="form-control" name='password' required placeholder="Password"/>
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
+            <div style="margin-bottom:5px">
+                <div class="g-recaptcha mt-4" data-sitekey="{{config('services.recaptcha.key')}}"></div>
+            </div>
             <div style="margin-bottom:10px" class='row'>
                 <div class='col-xs-12'>
                     <button type="submit" class="btn btn-primary btn-block btn-flat"><i class='fa fa-lock'></i> {{cbLang("button_sign_in")}}</button>
@@ -123,5 +126,7 @@
 <script src="{{asset('vendor/crudbooster/assets/adminlte/plugins/jQuery/jquery-2.2.3.min.js')}}"></script>
 <!-- Bootstrap 3.4.1 JS -->
 <script src="{{asset('vendor/crudbooster/assets/adminlte/bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
+<!-- grecaptcha -->
+<script async src="https://www.google.com/recaptcha/api.js"></script>
 </body>
 </html>
