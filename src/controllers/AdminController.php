@@ -58,6 +58,32 @@ class AdminController extends CBController
         return view('crudbooster::login');
     }
 
+    public function getDataPegawai($username) {
+        // get Data Pegawai lama
+        // $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
+
+        // webservice endpoint token splp
+        $endpoint_splp = "https://splp.denpasarkota.go.id/consumer/login";
+
+        // get token
+        $data = [
+            'username' => env('API_SPLP_USER'),
+            'password' => env('API_SPLP_PASSWORD'),
+        ];
+        $rp = Http::asForm()->post($endpoint_splp, $data);
+
+        // webservice endpoint simpeg
+        $endpoint = "https://splp.denpasarkota.go.id/index.php/dev/simpeg/pegawai";
+        $parameter = "?pagetype=serviceauth&page=Web-Service-WBS&action=getPegawai&nip=".$username;
+        
+        $response = Http::get($endpoint.$parameter)
+                        ->withHeaders([
+                            'Authorization' => 'Bearer '.$rp['token'],
+                        ]);
+
+        return $response;
+    }
+
     public function postLogin()
     {
         $recaptcha_response = Request::input('g-recaptcha-response');
@@ -122,24 +148,24 @@ class AdminController extends CBController
         
                     $photo = ($user_api['photo']) ? asset($user_api['photo']) : asset('vendor/crudbooster/avatar.jpg');
     
-                    // get Data Pegawai
-                    $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
-                    $user = $response['result']['pegawai'];
-                    $user_jab = $response['result']['jabatan'][0];
-                    
-                    // dd($response->json());
-        
-                    Session::put('admin_id', $user['peg_nip']);
+                    // get data pegawai
+                    $dp = $this->getDataPegawai($username);
+                    $user = $dp['result'][0];
+                
+                    Session::put('admin_id', $user['peg_nip_baru']);
     
-                    Session::put('admin_peg_id', $user['peg_nip']);
+                    Session::put('admin_peg_id', $user['peg_nip_baru']);
                     Session::put('admin_passcode', null);
-                    Session::put('admin_opd', $user_jab['unit_name']);
-                    Session::put('admin_opd_jab', $user_jab['jab_name']);
+                    Session::put('admin_opd', $user['uk_name']);
+                    Session::put('admin_opd_jab', $user['jab_name']);
                     Session::put('admin_ssoid', $rp['tiket']);
     
                     Session::put('admin_is_superadmin', $super_admin);
                     Session::put('admin_name', $user['peg_nama']);
-                    Session::put('admin_photo', $user['url_photo']);
+                    Session::put('admin_photo', $user['peg_photo']);
+                    Session::put('admin_email', $user['peg_email']);
+                    Session::put('admin_hp', $user['peg_hp']);
+
                     Session::put('admin_privileges_roles', $roles);
                     Session::put("admin_privileges", $hak_akses);
                     Session::put('admin_privileges_name', $priv->name);
@@ -223,23 +249,23 @@ class AdminController extends CBController
                 $photo = ($user_api['photo']) ? asset($user_api['photo']) : asset('vendor/crudbooster/avatar.jpg');
 
                 // get Data Pegawai
-                $response = Http::get('https://simpeg.denpasarkota.go.id/index.php?page=sso&tiket='.$rp['tiket'].'&action=getDataPegawai');
-                $user = $response['result']['pegawai'];
-                $user_jab = $response['result']['jabatan'][0];
+                $dp = $this->getDataPegawai($username);
+                $user = $dp['result'][0];
                 
-                // dd($response->json());
-    
-                Session::put('admin_id', $user['peg_nip']);
+                Session::put('admin_id', $user['peg_nip_baru']);
 
-                Session::put('admin_peg_id', $user['peg_nip']);
+                Session::put('admin_peg_id', $user['peg_nip_baru']);
                 Session::put('admin_passcode', null);
-                Session::put('admin_opd', $user_jab['unit_name']);
-                Session::put('admin_opd_jab', $user_jab['jab_name']);
+                Session::put('admin_opd', $user['uk_name']);
+                Session::put('admin_opd_jab', $user['jab_name']);
                 Session::put('admin_ssoid', $rp['tiket']);
 
                 Session::put('admin_is_superadmin', $super_admin);
                 Session::put('admin_name', $user['peg_nama']);
-                Session::put('admin_photo', $user['url_photo']);
+                Session::put('admin_photo', $user['peg_photo']);
+                Session::put('admin_email', $user['peg_email']);
+                Session::put('admin_hp', $user['peg_hp']);
+
                 Session::put('admin_privileges_roles', $roles);
                 Session::put("admin_privileges", $hak_akses);
                 Session::put('admin_privileges_name', $priv->name);
