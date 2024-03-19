@@ -76,10 +76,7 @@ class AdminController extends CBController
         $endpoint = "https://splp.denpasarkota.go.id/index.php/dev/simpeg/pegawai";
         $parameter = "?pagetype=serviceauth&page=Web-Service-WBS&action=getPegawai&nip=".$username;
         
-        $response = Http::get($endpoint.$parameter)
-                        ->withHeaders([
-                            'Authorization' => 'Bearer '.$rp['token'],
-                        ]);
+        $response = Http::get($endpoint.$parameter)->withToken($rp['token']);
 
         return $response;
     }
