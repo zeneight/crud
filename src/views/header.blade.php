@@ -63,7 +63,8 @@
                             <img src="{{ CRUDBooster::myPhoto() }}" class="img-circle" alt="User Image"/>
                             <p>
                                 {{ CRUDBooster::myName() }}
-                                <small>{{ CRUDBooster::myPrivilegeName() }}</small>
+                                <!-- <small>{{ CRUDBooster::myPrivilegeName() }}</small> -->
+                                <small>{{ Session()->get('admin_email') }}</small>
                                 <small><em><?php echo date('d F Y')?></em></small>
                             </p>
                         </li>
