@@ -78,7 +78,7 @@ class AdminController extends CBController
         
         $response = Http::get($endpoint.$parameter)->withToken($rp['token']);
 
-        return $response;
+        return $response['result'];
     }
 
     public function postLogin()
@@ -147,7 +147,7 @@ class AdminController extends CBController
     
                     // get data pegawai
                     $dp = $this->getDataPegawai($username);
-                    $user = $dp['result'][0];
+                    $user = $dp[0];
                 
                     Session::put('admin_id', $user['peg_nip_baru']);
     
@@ -247,7 +247,7 @@ class AdminController extends CBController
 
                 // get Data Pegawai
                 $dp = $this->getDataPegawai($username);
-                $user = $dp['result'][0];
+                $user = $dp[0];
                 
                 Session::put('admin_id', $user['peg_nip_baru']);
 
