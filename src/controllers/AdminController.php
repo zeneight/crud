@@ -153,7 +153,7 @@ class AdminController extends CBController
     
                     Session::put('admin_peg_id', $user['peg_nip_baru']);
                     Session::put('admin_passcode', null);
-                    Session::put('admin_opd', $user['uk_name']);
+                    Session::put('admin_opd', $user['uk_nama']);
                     Session::put('admin_opd_jab', $user['jab_name']);
                     Session::put('admin_ssoid', $rp['tiket']);
     
@@ -253,7 +253,7 @@ class AdminController extends CBController
 
                 Session::put('admin_peg_id', $user['peg_nip_baru']);
                 Session::put('admin_passcode', null);
-                Session::put('admin_opd', $user['uk_name']);
+                Session::put('admin_opd', $user['uk_nama']);
                 Session::put('admin_opd_jab', $user['jab_name']);
                 Session::put('admin_ssoid', $rp['tiket']);
 
