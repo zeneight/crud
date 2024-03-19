@@ -64,7 +64,7 @@
                             <p>
                                 {{ CRUDBooster::myName() }}
                                 <!-- <small>{{ CRUDBooster::myPrivilegeName() }}</small> -->
-                                <small>{{ Session()->get('admin_email') }}</small>
+                                <small>{{ Session()->get('admin_opd_jab') }}</small>
                                 <small><em><?php echo date('d F Y')?></em></small>
                             </p>
                         </li>
