@@ -1,6 +1,6 @@
 {
-    "name": "crocodicstudio/crudbooster",
-    "description": "CRUDBooster Is CRUD Generator Based On Laravel Easy To Make An Advanced Backend",
+    "name": "zeneight/crud",
+    "description": "CRUD Generator",
     "type": "library",
     "license": "MIT",
     "keywords":[
@@ -14,8 +14,8 @@
     ],
     "authors": [
         {
-            "name": "Ferry",
-            "email": "ferry@crocodic.com"
+            "name": "-",
+            "email": "-"
         }
     ],
     "minimum-stability": "stable",
