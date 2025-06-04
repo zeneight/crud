@@ -24,13 +24,13 @@
     },
     "autoload": {
         "psr-4": {
-          "zeneight\\crud\\": "src/"
+          "crocodicstudio\\crudbooster\\": "src/"
         }
       },
     "extra": {
         "laravel": {
             "providers": [
-                "zeneight\\crud\\CRUDBoosterServiceProvider"
+                "crocodicstudio\\crudbooster\\CRUDBoosterServiceProvider"
             ]
         }
     }
