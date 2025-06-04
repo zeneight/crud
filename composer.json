@@ -8,7 +8,6 @@
         "admin-panel",
         "backend",
         "crud-generator",
-        "crudbooster",
         "crud",
         "generator"
     ],
@@ -22,20 +21,22 @@
     "require": {
         "php":"^7.4|^8.1",
         "barryvdh/laravel-dompdf": "0.8.*",
-        "doctrine/dbal": "~2.3",
+        "doctrine/dbal": "~3.0",
         "maatwebsite/excel": "^3.1",
         "intervention/imagecache":"^2.3",
-        "laravel/framework": "^8.34"
+        "laravel/framework": "^10.0",
+        "symfony/polyfill-php80": "^1.32",
+        "symfony/polyfill-php81": "^1.32"
     },
     "autoload": {
         "psr-4": {
-          "crocodicstudio\\crudbooster\\": "src/"
+          "zeneight\\crud\\": "src/"
         }
       },
     "extra": {
         "laravel": {
             "providers": [
-                "crocodicstudio\\crudbooster\\CRUDBoosterServiceProvider"
+                "zeneight\\crud\\CRUDBoosterServiceProvider"
             ]
         }
     }
