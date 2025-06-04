@@ -11,12 +11,6 @@
         "crud",
         "generator"
     ],
-    "authors": [
-        {
-            "name": "-",
-            "email": "-"
-        }
-    ],
     "minimum-stability": "stable",
     "require": {
         "php":"^7.4|^8.1",
